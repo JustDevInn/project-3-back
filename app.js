@@ -9,9 +9,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-mongoose.connect('mongodb://localhost/project-3');
-
-mongoose.connection.once('open', function() {
+mongoose.connect(`${process.env.DB}`)
+mongoose.connection('open', function() {
     console.log('connection has been made, Hurah!')
 }).on('error', function() {
     console.log('connection error', error);
