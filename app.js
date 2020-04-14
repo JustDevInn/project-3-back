@@ -9,7 +9,7 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-mongoose.connect(`${process.env.DB}`, function() {
+mongoose.connect(`http://localhost:3000/`, function() {
     console.log('connection has been made, Hurah!')
 }).catch('error', function() {
     console.log('connection error', error);
