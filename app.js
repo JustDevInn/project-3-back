@@ -9,12 +9,12 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-mongoose.connect(`${process.env.DB}`)
-mongoose.connection('open', function() {
+mongoose.connect(`${process.env.DB}`, function() {
     console.log('connection has been made, Hurah!')
-}).on('error', function() {
+}).catch('error', function() {
     console.log('connection error', error);
 })
+
 
 
 
@@ -47,5 +47,6 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
+
 
 module.exports = app;
