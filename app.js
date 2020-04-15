@@ -1,52 +1,58 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const cors = require("cors");
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const session = require('express-session')
 
-var app = express();
+require("dotenv").config();
 
-mongoose.connect(`http://localhost:3000/`, function() {
-    console.log('connection has been made, Hurah!')
-}).catch('error', function() {
-    console.log('connection error', error);
+var sessionOptions = {
+    secret: process.env.SESSION_SECRET,
+    cookie: {}
+}
+app.use(session(sessionOptions));
+
+let options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+};
+
+// mongoose
+//     .connect(process.env.DB, options, (err, connectionInfo) => {
+//         if (err) console.log("ERROR", err);
+//         else console.log("connected to db");
+//     })
+mongoose
+    .connect('mongodb://localhost/project-3', { useNewUrlParser: true })
+    .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
+    .catch(err => console.error('Error connecting to mongo', err));
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded())
+
+app.use(
+    cors({
+        allowedHeaders: ["authorization", "Content-Type"], // you can change the headers
+        exposedHeaders: ["authorization"], // you can change the headers
+        origin: process.env.client,
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: false
+    })
+);
+
+
+app.use("/auth", require("./routes/auth"));
+app.use("/", require("./routes/index"));
+app.use("/", require("./routes/wod"));
+
+app.use((err, req, res, next) => {
+    res.status(err.status)
+    res.json({
+        error: err.message
+    })
 })
 
-
-
-
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
-
-
-module.exports = app;
+app.listen(process.env.PORT, () => {
+    console.log("listening, server is running");
+})
