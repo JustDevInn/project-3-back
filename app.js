@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var app = express();
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -7,15 +8,19 @@ const mongoose = require("mongoose");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var app = express();
-
-mongoose.connect(`http://localhost:3000/`, function() {
-    console.log('connection has been made, Hurah!')
-}).catch('error', function() {
-    console.log('connection error', error);
-})
+//make sure you create a session. Try npm express-session like in module 2
 
 
+// mongoose.connect(`http://localhost:3000/`, function() {
+//     console.log('connection has been made, Hurah!')
+// }).catch('error', function() {
+//     console.log('connection error', error);
+// })
+
+mongoose
+  .connect('mongodb://localhost/crossfitProject', {useNewUrlParser: true})
+  .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
+  .catch(err => console.error('Error connecting to mongo', err));
 
 
 
