@@ -32,7 +32,7 @@ app.use(
     cors({
         allowedHeaders: ["authorization", "Content-Type"], // you can change the headers
         exposedHeaders: ["authorization"], // you can change the headers
-        origin: "process.env.client",
+        origin: ["https://localhost:3000", "http://localhost:3000", "https://localhost:3001", "http://localhost:3001"],
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         preflightContinue: false
     })
