@@ -5,7 +5,7 @@ const createError = require('http-errors')
 const User = require("../models/User");
 const router = express.Router();
 
-router.route("/Signup")
+router.route("/signup")
     .post((req, res, next) => {
 
         bcrypt.hash(req.body.password, 10, function (err, hash) {

@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const session = require('express-session')
-
+const mongoose = require('mongoose');
 require("dotenv").config();
 
 var sessionOptions = {
@@ -13,16 +13,34 @@ var sessionOptions = {
 app.use(session(sessionOptions));
 
 
-const mongoose = require('mongoose');
+
+function auth(req, res, next) {
+    console.log('CURRENT USER', req.session.currentUser)
+    if (req.session.currentUser) {
+        next()
+    } else {
+        res.json({ message: "Not logged in on back-end" })
+    }
+}
+
+
 let options = {
     useNewUrlParser: true,
     useUnifiedTopology: true
 };
-mongoose.connect("mongodb://localhost/project-3", options, (err, connectionInfo) => {
-    if (err) console.log('ERROR', err);
-}).then((x) => {
-    console.log(`Connected to database`)
-})
+
+mongoose
+    .connect(process.env.DB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false
+    })
+    .then(x => {
+        console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
+    })
+    .catch(err => {
+        console.error('Error connecting to mongo', err)
+    });
 
 
 app.use(bodyParser.json())
@@ -34,14 +52,17 @@ app.use(
         exposedHeaders: ["authorization"], // you can change the headers
         origin: ["https://localhost:3000", "http://localhost:3000", "https://localhost:3001", "http://localhost:3001"],
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-        preflightContinue: false
+        preflightContinue: false,
+        credentials: true
     })
 );
+
 
 
 app.use("/auth", require("./routes/auth"));
 app.use("/", require("./routes/index"));
 app.use("/", require("./routes/wod"));
+app.use("/", require("./routes/user"));
 
 app.use((err, req, res, next) => {
     res.status(err.status)
@@ -49,6 +70,5 @@ app.use((err, req, res, next) => {
         error: err.message
     })
 })
-
 
 module.exports = app;
