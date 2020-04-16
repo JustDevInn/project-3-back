@@ -7,7 +7,7 @@ const wodSchema = new Schema({
     description: String
 });
 
-const Wod = mongoose.model('workout', wodSchema);
+const Wod = mongoose.model('wods', wodSchema);
 
 
 module.exports = Wod;

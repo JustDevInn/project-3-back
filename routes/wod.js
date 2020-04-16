@@ -9,8 +9,8 @@ const Wod = require("../models/wods")
 router.get("/wods", (req, res) => {
         Wod
             .find()
-            .then((bla) => {
-                res.json(bla)
+            .then((data) => {
+                res.json(data)
             })
             .catch((err) => {
                 res.send("error");
