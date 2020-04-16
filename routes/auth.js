@@ -69,4 +69,12 @@ router.delete("/Logout", (req, res) => {
     res.status(200).send("logged out");
 })
 
+router.get('/', function(req, res, next) {
+    res.json('index', { title: 'Express' });
+});
+
+module.exports = router;
+
+
+
 module.exports = router;
