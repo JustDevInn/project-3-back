@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 require("dotenv").config();
 
 var sessionOptions = {
-    secret: "sdfgfsgtersty",
+    secret: process.env.SESSION_SECRET,
     cookie: {}
 }
 app.use(session(sessionOptions));
@@ -50,7 +50,7 @@ app.use(
     cors({
         allowedHeaders: ["authorization", "Content-Type"], // you can change the headers
         exposedHeaders: ["authorization"], // you can change the headers
-        origin: ["https://localhost:3000", "http://localhost:3000", "https://localhost:3001", "http://localhost:3001"],
+        origin: [process.env.client_origin_a, process.env.client_origin_b],
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         preflightContinue: false,
         credentials: true
