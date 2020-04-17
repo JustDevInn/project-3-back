@@ -15,6 +15,14 @@ let User = new Schema({
         password: {
             type: String,
             required: [true, "Password is required"]
+        },
+        firstname:{
+            type:String,
+            required: true,
+        },
+        lastname:{  
+            type:String,
+            required: true,
         }
 
     },

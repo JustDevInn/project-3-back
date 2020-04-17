@@ -20,7 +20,9 @@ router.route("/signup")
                     return User.create({
                         username: req.body.username,
                         email: req.body.email,
-                        password: hash
+                        password: hash,
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname
                     })
                 })
                 .then((user) => {
