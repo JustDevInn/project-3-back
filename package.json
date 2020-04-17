@@ -1,11 +1,7 @@
 {
-    "name": "api",
-    "version": "0.0.0",
-    "private": true,
-    "scripts": {
-        "start": "node ./bin/www",
-        "debug": "nodemon --inspect ./bin/www"
-    },
+    "name": "api-ftw",
+    "version": "1.0.0",
+    "description": "",
     "dependencies": {
         "bcrypt": "^4.0.1",
         "body-parser": "^1.19.0",
@@ -21,5 +17,20 @@
         "mongoose": "^5.9.9",
         "morgan": "~1.9.1",
         "nodemon": "^2.0.3"
-    }
+    },
+    "devDependencies": {},
+    "scripts": {
+        "start": "node app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JustDevInn/project-3-back.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/JustDevInn/project-3-back/issues"
+    },
+    "homepage": "https://github.com/JustDevInn/project-3-back#readme"
 }
