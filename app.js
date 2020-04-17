@@ -14,7 +14,18 @@ var sessionOptions = {
     secret: process.env.SESSION_SECRET,
     cookie: {}
 }
-app.use(session(sessionOptions));
+
+const MongoStore = require('connect-mongo')(session);
+app.use(session({
+    cookie: { secure: "auto" },
+    secret: process.env.SESSION_SECRET,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: (14 * 24 * 60 * 60), // = 14 days. Default
+        autoRemove: 'native' // Default
+    })
+}));
+
 
 function auth(req, res, next) {
     console.log('CURRENT USER', req.session.currentUser)
