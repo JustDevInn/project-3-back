@@ -6,6 +6,10 @@ const session = require('express-session')
 const mongoose = require('mongoose');
 require("dotenv").config();
 
+var favicon = require('serve-favicon')
+var path = require('path')
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+
 var sessionOptions = {
     secret: process.env.SESSION_SECRET,
     cookie: {}
