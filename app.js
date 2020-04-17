@@ -5,17 +5,12 @@ const bodyParser = require("body-parser");
 const session = require('express-session')
 const mongoose = require('mongoose');
 require("dotenv").config();
-const path = require("path");
-var favicon = require('serve-favicon');
 
 var sessionOptions = {
     secret: process.env.SESSION_SECRET,
     cookie: {}
 }
 app.use(session(sessionOptions));
-
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-
 
 function auth(req, res, next) {
     console.log('CURRENT USER', req.session.currentUser)
