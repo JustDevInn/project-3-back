@@ -2,6 +2,9 @@
     "name": "api-ftw",
     "version": "1.0.0",
     "description": "",
+    "engines": {
+        "node": "12.14.1"
+    },
     "dependencies": {
         "bcrypt": "^4.0.1",
         "body-parser": "^1.19.0",
@@ -20,7 +23,7 @@
     },
     "devDependencies": {},
     "scripts": {
-        "start": "node ./http/app.js"
+        "start": "node ./http/www"
     },
     "repository": {
         "type": "git",
