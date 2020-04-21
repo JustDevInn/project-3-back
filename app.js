@@ -6,13 +6,25 @@ const session = require('express-session')
 const mongoose = require('mongoose');
 require("dotenv").config();
 
+var favicon = require('serve-favicon')
+var path = require('path')
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+
 var sessionOptions = {
     secret: process.env.SESSION_SECRET,
     cookie: {}
 }
-app.use(session(sessionOptions));
 
-
+const MongoStore = require('connect-mongo')(session);
+app.use(session({
+    cookie: { secure: "auto" },
+    secret: process.env.SESSION_SECRET,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: (14 * 24 * 60 * 60), // = 14 days. Default
+        autoRemove: 'native' // Default
+    })
+}));
 
 function auth(req, res, next) {
     console.log('CURRENT USER', req.session.currentUser)
@@ -33,7 +45,6 @@ mongoose
     .connect(process.env.DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useFindAndModify: false
     })
     .then(x => {
         console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
@@ -48,11 +59,7 @@ app.use(bodyParser.urlencoded())
 
 app.use(
     cors({
-        allowedHeaders: ["authorization", "Content-Type"], // you can change the headers
-        exposedHeaders: ["authorization"], // you can change the headers
-        origin: [process.env.client_origin_a, process.env.client_origin_b],
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-        preflightContinue: false,
+        origin: true,
         credentials: true
     })
 );
@@ -71,4 +78,6 @@ app.use((err, req, res, next) => {
     })
 })
 
+
+// app.listen(3000, ()=> {console.log("listening")})
 module.exports = app;

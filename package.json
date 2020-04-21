@@ -1,14 +1,14 @@
 {
-    "name": "api",
-    "version": "0.0.0",
-    "private": true,
-    "scripts": {
-        "start": "node ./bin/www",
-        "debug": "nodemon --inspect ./bin/www"
+    "name": "api-ftw",
+    "version": "1.0.0",
+    "description": "",
+    "engines": {
+        "node": "12.14.1"
     },
     "dependencies": {
         "bcrypt": "^4.0.1",
         "body-parser": "^1.19.0",
+        "connect-mongo": "^3.2.0",
         "cookie-parser": "~1.4.4",
         "cors": "^2.8.5",
         "debug": "~2.6.9",
@@ -20,6 +20,22 @@
         "mongodb": "^3.5.5",
         "mongoose": "^5.9.9",
         "morgan": "~1.9.1",
-        "nodemon": "^2.0.3"
-    }
+        "nodemon": "^2.0.3",
+        "serve-favicon": "^2.5.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "start": "node ./http/www"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JustDevInn/project-3-back.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/JustDevInn/project-3-back/issues"
+    },
+    "homepage": "https://github.com/JustDevInn/project-3-back#readme"
 }
