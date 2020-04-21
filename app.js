@@ -26,11 +26,6 @@ app.use(session({
     })
 }));
 
-mongoose
-  .connect('mongodb://localhost/crossfitProject', {useNewUrlParser: true})
-  .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
-  .catch(err => console.error('Error connecting to mongo', err));
-
 function auth(req, res, next) {
     console.log('CURRENT USER', req.session.currentUser)
     if (req.session.currentUser) {
@@ -45,6 +40,19 @@ let options = {
     useNewUrlParser: true,
     useUnifiedTopology: true
 };
+
+mongoose
+    .connect(process.env.DB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(x => {
+        console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
+    })
+    .catch(err => {
+        console.error('Error connecting to mongo', err)
+    });
+
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded())
