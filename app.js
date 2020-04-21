@@ -59,11 +59,7 @@ app.use(bodyParser.urlencoded())
 
 app.use(
     cors({
-        allowedHeaders: ["authorization", "Content-Type"], // you can change the headers
-        exposedHeaders: ["authorization"], // you can change the headers
-        origin: [process.env.client_origin_a, process.env.client_origin_b],
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-        preflightContinue: false,
+        origin: true,
         credentials: true
     })
 );
@@ -82,4 +78,6 @@ app.use((err, req, res, next) => {
     })
 })
 
+
+// app.listen(3000, ()=> {console.log("listening")})
 module.exports = app;
