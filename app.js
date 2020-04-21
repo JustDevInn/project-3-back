@@ -1,57 +1,91 @@
-var createError = require('http-errors');
-var express = require('express');
-var app = express();
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const mongoose = require("mongoose");
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const cors = require("cors");
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const session = require('express-session')
+const mongoose = require('mongoose');
+require("dotenv").config();
 
-//make sure you create a session. Try npm express-session like in module 2
+var favicon = require('serve-favicon')
+var path = require('path')
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
+var sessionOptions = {
+    secret: process.env.SESSION_SECRET,
+    cookie: {}
+}
 
-// mongoose.connect(`http://localhost:3000/`, function() {
-//     console.log('connection has been made, Hurah!')
-// }).catch('error', function() {
-//     console.log('connection error', error);
-// })
+const MongoStore = require('connect-mongo')(session);
+app.use(session({
+    cookie: { secure: "auto" },
+    secret: process.env.SESSION_SECRET,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: (14 * 24 * 60 * 60), // = 14 days. Default
+        autoRemove: 'native' // Default
+    })
+}));
 
 mongoose
   .connect('mongodb://localhost/crossfitProject', {useNewUrlParser: true})
   .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
   .catch(err => console.error('Error connecting to mongo', err));
 
+function auth(req, res, next) {
+    console.log('CURRENT USER', req.session.currentUser)
+    if (req.session.currentUser) {
+        next()
+    } else {
+        res.json({ message: "Not logged in on back-end" })
+    }
+}
 
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+let options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+};
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+mongoose
+    .connect(process.env.DB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false
+    })
+    .then(x => {
+        console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
+    })
+    .catch(err => {
+        console.error('Error connecting to mongo', err)
+    });
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(createError(404));
-});
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded())
 
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(
+    cors({
+        allowedHeaders: ["authorization", "Content-Type"], // you can change the headers
+        exposedHeaders: ["authorization"], // you can change the headers
+        origin: [process.env.client_origin_a, process.env.client_origin_b],
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: false,
+        credentials: true
+    })
+);
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
 
+
+app.use("/auth", require("./routes/auth"));
+app.use("/", require("./routes/index"));
+app.use("/", require("./routes/wod"));
+app.use("/", require("./routes/user"));
+
+app.use((err, req, res, next) => {
+    res.status(err.status)
+    res.json({
+        error: err.message
+    })
+})
 
 module.exports = app;
